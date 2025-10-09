@@ -7,11 +7,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "ADRESS", schema = "COFFEWORK")
+@Table(name = "ESTABLISHMENT", schema = "COFFEWORK")
 public class CoffeWork {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "establishment_seq")
+    @SequenceGenerator(name = "establishment_seq", sequenceName = "coffework.idCoffe", allocationSize = 1)
     private Integer id;
 
     @Column(name = "name")
