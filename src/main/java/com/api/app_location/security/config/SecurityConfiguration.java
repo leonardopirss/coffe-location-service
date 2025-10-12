@@ -23,14 +23,15 @@ public class SecurityConfiguration {
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/users/login",
-            "/users/create",
             "/api/list",
             "/api/closest/coffe"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/users/",
-            "/api/list/best-coffe"
+            "/users/create",
+            "/api/list/best-coffe",
+            "api/add-coffe",
+            "api/delete-coffe"
     };
 
     public static final String [] ENDPOINTS_CUSTOMER = {

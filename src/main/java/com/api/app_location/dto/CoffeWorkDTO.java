@@ -20,4 +20,8 @@ public class CoffeWorkDTO {
     private String description;
 
     private int assessment;
+
+    private double latitude;
+
+    private double longitude;
 }

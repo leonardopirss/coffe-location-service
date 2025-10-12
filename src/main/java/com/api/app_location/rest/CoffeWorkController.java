@@ -42,4 +42,10 @@ public class CoffeWorkController {
     public List<CoffeWorkDTO> closestCoffe(@RequestParam double latitude, @RequestParam double longitude ) {
         return coffeWorkService.nearestCoffeeShops(latitude,longitude );
     }
+
+    @DeleteMapping("/delete-coffe")
+    public ResponseEntity<CoffeWorkDTO> deleteCoffe(@RequestParam Integer id) {
+        CoffeWorkDTO deleted = coffeWorkService.delete(id);
+        return deleted != null ? new ResponseEntity<>(deleted, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
