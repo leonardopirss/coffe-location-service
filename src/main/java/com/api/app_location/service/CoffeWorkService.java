@@ -5,12 +5,14 @@ import com.api.app_location.dto.CoffeWorkDTO;
 import com.api.app_location.entity.CoffeWork;
 import com.api.app_location.exception.FailedSaveException;
 import com.api.app_location.mapper.CoffeWorkMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class CoffeWorkService {
 
     @Autowired
@@ -39,11 +41,11 @@ public class CoffeWorkService {
             CoffeWork mapperEntity = mapper.toEntity(dto);
             return coffeWorkRepository.save(mapperEntity);
         } catch (Exception e) {
-            throw new FailedSaveException("Erro ao salvar lugar: " + e.getMessage());
+            throw new FailedSaveException("Erro ao salvar café: " + e.getMessage());
         }
     }
 
-    public List<CoffeWorkDTO> nearestCoffeeShops(double latitude, double longitude){
+    public List<CoffeWorkDTO> nearestCoffeeShops(double latitude, double longitude) {
         try {
             List<CoffeWork> listNearestCoffeeShops = coffeWorkRepository.nearestCoffeeShops(latitude, longitude);
             return mapper.toDTOList(listNearestCoffeeShops);
@@ -52,5 +54,19 @@ public class CoffeWorkService {
         }
     }
 
+    public CoffeWorkDTO delete(Integer id) {
+        try {
+            if (!coffeWorkRepository.existsById(id)) {
+                log.info("id não encontrado: " + id);
+                return null;
+            }
+
+            CoffeWorkDTO dto = mapper.toDTO(coffeWorkRepository.findById(id).get());
+            coffeWorkRepository.deleteById(id);
+            return dto;
+        } catch (Exception e) {
+            throw new FailedSaveException("Erro ao deletar café: " + e.getMessage());
+        }
+    }
 }
 
