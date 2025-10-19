@@ -18,8 +18,7 @@ public class CoffeWorkController {
     private CoffeWorkService coffeWorkService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<CoffeWorkDTO>> listAll(@RequestParam int page, @RequestParam int size)
-    {
+    public ResponseEntity<List<CoffeWorkDTO>> listAll(@RequestParam int page, @RequestParam int size) throws Exception {
         return ResponseEntity.ok(coffeWorkService.listAll(page, size));
     }
 

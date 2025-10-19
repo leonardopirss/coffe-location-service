@@ -24,7 +24,10 @@ public class CoffeWorkService {
     @Autowired
     private CoffeWorkMapper mapper;
 
-    public List<CoffeWorkDTO> listAll(int  page, int size) {
+    public List<CoffeWorkDTO> listAll(int page, int size) throws Exception {
+        if (size >= 100) {
+            throw new FailedSaveException("Limite máximo de items retornados atingido");
+        }
         Pageable pageable = PageRequest.of(page, size);
         return coffeWorkRepository.findAll(pageable).map(mapper::toDTO).getContent();
     }
@@ -34,7 +37,7 @@ public class CoffeWorkService {
         return mapper.toDTOList(entities);
     }
 
-    public List<CoffeWorkDTO> bestCoffes(int  page, int size) {
+    public List<CoffeWorkDTO> bestCoffes(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return coffeWorkRepository.bestCoffes(pageable).stream().map(mapper::toDTO).toList();
     }
