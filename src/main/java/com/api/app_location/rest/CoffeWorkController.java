@@ -18,8 +18,9 @@ public class CoffeWorkController {
     private CoffeWorkService coffeWorkService;
 
     @GetMapping("/list")
-    public List<CoffeWorkDTO> listAll() {
-        return coffeWorkService.listAll();
+    public ResponseEntity<List<CoffeWorkDTO>> listAll(@RequestParam int page, @RequestParam int size)
+    {
+        return ResponseEntity.ok(coffeWorkService.listAll(page, size));
     }
 
     @GetMapping("/filter-name")
@@ -28,8 +29,8 @@ public class CoffeWorkController {
     }
 
     @GetMapping("/list/best-coffe")
-    public List<CoffeWorkDTO> listBest() {
-        return coffeWorkService.bestCoffes();
+    public List<CoffeWorkDTO> listBest(@RequestParam int page, @RequestParam int size) {
+        return coffeWorkService.bestCoffes(page, size);
     }
 
     @PostMapping("/add-coffe")

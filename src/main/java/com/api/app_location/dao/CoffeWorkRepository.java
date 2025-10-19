@@ -1,9 +1,10 @@
 package com.api.app_location.dao;
 
 import com.api.app_location.entity.CoffeWork;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.RepositoryDefinition;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ public interface CoffeWorkRepository extends JpaRepository<CoffeWork, Integer> {
     List<CoffeWork> findByNameContainingIgnoreCase(String name);
 
     @Query("SELECT c FROM CoffeWork c WHERE c.assessment >= 4")
-    List<CoffeWork> bestCoffes();
+    List<CoffeWork> bestCoffes(Pageable pageable);
 
     @Query(value = """
             SELECT
