@@ -1,13 +1,16 @@
 package com.api.app_location.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "ADRESS", schema = "COFFEWORK")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "ESTABLISHMENT", schema = "COFFEWORK")
 public class CoffeWork {
 
     @Id
@@ -32,4 +35,9 @@ public class CoffeWork {
     @Column(name = "assessment")
     private Integer assessment;
 
+    @Column(name = "lng")
+    private double longitude;
+
+    @Column(name = "lat")
+    private double latitude;
 }

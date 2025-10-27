@@ -1,7 +1,6 @@
 package com.api.app_location.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -20,4 +19,8 @@ public class CoffeWorkDTO {
     private String description;
 
     private int assessment;
+
+    private double latitude;
+
+    private double longitude;
 }

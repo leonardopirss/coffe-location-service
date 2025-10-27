@@ -11,9 +11,16 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(FailedSaveException.class)
-  public ResponseEntity<?> handleFalhaSalvar(FailedSaveException e) {
+  public ResponseEntity<?> handleFailedSalve(FailedSaveException e) {
     return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(Map.of("erro", e.getMessage()));
+            .body(Map.of("ERROR", e.getMessage()));
   }
+
+    @ExceptionHandler(FailedFilterData.class)
+    public ResponseEntity<?> handleFailedFind(FailedSaveException e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("ERROR", e.getMessage()));
+    }
 }

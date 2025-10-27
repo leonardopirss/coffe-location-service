@@ -18,8 +18,8 @@ public class CoffeWorkController {
     private CoffeWorkService coffeWorkService;
 
     @GetMapping("/list")
-    public List<CoffeWorkDTO> listAll() {
-        return coffeWorkService.listAll();
+    public ResponseEntity<List<CoffeWorkDTO>> listAll(@RequestParam int page, @RequestParam int size) throws Exception {
+        return ResponseEntity.ok(coffeWorkService.listAll(page, size));
     }
 
     @GetMapping("/filter-name")
@@ -28,8 +28,8 @@ public class CoffeWorkController {
     }
 
     @GetMapping("/list/best-coffe")
-    public List<CoffeWorkDTO> listBest() {
-        return coffeWorkService.bestCoffes();
+    public List<CoffeWorkDTO> listBest(@RequestParam int page, @RequestParam int size) {
+        return coffeWorkService.bestCoffes(page, size);
     }
 
     @PostMapping("/add-coffe")
@@ -41,5 +41,11 @@ public class CoffeWorkController {
     @GetMapping("/closest/coffe")
     public List<CoffeWorkDTO> closestCoffe(@RequestParam double latitude, @RequestParam double longitude ) {
         return coffeWorkService.nearestCoffeeShops(latitude,longitude );
+    }
+
+    @DeleteMapping("/delete-coffe")
+    public ResponseEntity<CoffeWorkDTO> deleteCoffe(@RequestParam Integer id) {
+        CoffeWorkDTO deleted = coffeWorkService.delete(id);
+        return deleted != null ? new ResponseEntity<>(deleted, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
