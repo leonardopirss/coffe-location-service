@@ -2,18 +2,14 @@ name: CI - Persist Coverage
 
 on:
   push:
-    branches:
-      - main
-      - develop
 
+permissions:
+  contents: write
+  actions: write
+  pull-requests: write
 jobs:
   build-and-report:
     runs-on: ubuntu-latest
-    # Permissões explícitas no nível do Job
-    permissions:
-      contents: write
-      actions: write
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -28,31 +24,35 @@ jobs:
       - name: Run Tests with JaCoCo
         run: mvn clean verify -B
 
-      - name: Extract and Update Repository Variable
+      - name: Testar Permissão do Token
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh auth status
+
+      - name: Extract and Update Repository Variable
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          # 1. Localiza o arquivo CSV (o caminho pode variar conforme o projeto)
           REPORT_PATH="target/site/jacoco/jacoco.csv"
 
           if [ -f "$REPORT_PATH" ]; then
-            # Extrai o valor do CSV
+            # 2. Extrai a cobertura usando AWK (calcula % de instruções cobertas)
+            # Coluna 4: INSTRUCTION_MISSED | Coluna 5: INSTRUCTION_COVERED
             COVERAGE=$(awk -F, 'NR > 1 { missed += $4; covered += $5 } END { if (covered + missed > 0) print int((covered / (covered + missed)) * 100); else print 0 }' $REPORT_PATH)
-          
+
             echo "Cobertura calculada: $COVERAGE%"
 
-            # Persiste o valor na Variable do Repositório
-            # O 'gh' vai criar a variável se ela não existir ou atualizar se já existir
+            # 3. Salva ou Atualiza a variável no repositório
+            # O nome da variável será 'ULTIMA_COBERTURA_PROJETO'
             gh variable set ULTIMA_COBERTURA_PROJETO --body "${COVERAGE}%"
-          
-            echo "Variável atualizada com sucesso no GitHub!"
+
+            echo "Variável ULTIMA_COBERTURA_PROJETO atualizada com sucesso!"
           else
-            echo "Erro: Arquivo jacoco.csv não encontrado."
+            echo "Erro: Arquivo jacoco.csv não encontrado em $REPORT_PATH"
             exit 1
           fi
 
-      - name: Debug Novo Valor
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verificar Atualização
         run: |
-          echo "Valor lido via API após atualização:"
-          gh variable get ULTIMA_COBERTURA_PROJETO
+          echo "Agora a variável contém: ${{ vars.ULTIMA_COBERTURA_PROJETO }}"
