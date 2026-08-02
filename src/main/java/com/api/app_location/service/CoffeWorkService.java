@@ -120,7 +120,7 @@ public class CoffeWorkService {
                     return cachedResult;
                 }
 
-                log.info("Cache Overpass valido encontrado, mas sem dados no banco. Sincronizando novamente.");
+                log.info("Valid Overpass cache found, but no database records were returned. Synchronizing again.");
             }
 
             String data = buildHomeOfficeQuery(latitude, longitude, radius);
@@ -128,11 +128,11 @@ public class CoffeWorkService {
             OverpassResponse response = overpassClient.execute(data);
             int savedElements = saveOrUpdateOverpassElements(response.elements());
             updateRegionCache(latitudeBucket, longitudeBucket, radius);
-            log.info("Sincronizacao Overpass concluida: {} estabelecimentos salvos/atualizados", savedElements);
+            log.info("Overpass synchronization completed: {} establishments saved/updated", savedElements);
 
             return findNearestFromDatabase(latitude, longitude, radius, pageable);
         } catch (Exception e) {
-            log.error("Erro ao localizar e sincronizar dados da Overpass", e);
+            log.error("Failed to locate and synchronize Overpass data", e);
             throw new FailedSaveException("Erro ao localizar: " + e.getMessage());
         }
     }
@@ -218,7 +218,7 @@ public class CoffeWorkService {
     public CoffeWorkDTO delete(Integer id) {
         try {
             if (!coffeWorkRepository.existsById(id)) {
-                log.info("id não encontrado: " + id);
+                log.info("ID not found: {}", id);
                 return null;
             }
 
