@@ -4,6 +4,7 @@ import lombok.*;
 
 @Getter
 @Setter
+@Builder
 public class CoffeWorkDTO {
 
     private Integer id;
@@ -11,6 +12,14 @@ public class CoffeWorkDTO {
     private String name;
 
     private String adress;
+
+    private String street;
+
+    private String addressNumber;
+
+    private String neighborhood;
+
+    private String postalCode;
 
     private String municipality;
 
@@ -20,7 +29,15 @@ public class CoffeWorkDTO {
 
     private int assessment;
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
+
+    private String osmType;
+
+    private Long osmId;
+
+    private String internetAccess;
+
+    private String openingHours;
 }

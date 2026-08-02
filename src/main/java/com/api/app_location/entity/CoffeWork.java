@@ -1,7 +1,6 @@
 package com.api.app_location.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -10,7 +9,13 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ESTABLISHMENT", schema = "COFFEWORK")
+@Table(
+        name = "ESTABLISHMENT",
+        schema = "COFFEWORK",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_establishment_osm", columnNames = {"osm_type", "osm_id"})
+        }
+)
 public class CoffeWork {
 
     @Id
@@ -22,6 +27,18 @@ public class CoffeWork {
 
     @Column(name = "adress")
     private String adress;
+
+    @Column(name = "street")
+    private String street;
+
+    @Column(name = "address_number")
+    private String addressNumber;
+
+    @Column(name = "neighborhood")
+    private String neighborhood;
+
+    @Column(name = "postal_code")
+    private String postalCode;
 
     @Column(name = "municipality")
     private String municipality;
@@ -36,8 +53,20 @@ public class CoffeWork {
     private Integer assessment;
 
     @Column(name = "lng")
-    private double longitude;
+    private Double longitude;
 
     @Column(name = "lat")
-    private double latitude;
+    private Double latitude;
+
+    @Column(name = "osm_type")
+    private String osmType;
+
+    @Column(name = "osm_id")
+    private Long osmId;
+
+    @Column(name = "internet_access")
+    private String internetAccess;
+
+    @Column(name = "opening_hours")
+    private String openingHours;
 }
