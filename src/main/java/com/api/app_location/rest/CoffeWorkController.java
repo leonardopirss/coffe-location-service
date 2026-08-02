@@ -4,6 +4,7 @@ import com.api.app_location.dto.CoffeWorkDTO;
 import com.api.app_location.entity.CoffeWork;
 import com.api.app_location.service.CoffeWorkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,14 @@ public class CoffeWorkController {
     }
 
     @GetMapping("/closest/coffe")
-    public List<CoffeWorkDTO> closestCoffe(@RequestParam double latitude, @RequestParam double longitude ) {
-        return coffeWorkService.nearestCoffeeShops(latitude,longitude );
+    public Page<CoffeWorkDTO> closestCoffe(
+            @RequestParam double latitude,
+            @RequestParam double longitude,
+            @RequestParam int radius,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return coffeWorkService.nearestCoffeeShops(latitude, longitude, radius, page, size);
     }
 
     @DeleteMapping("/delete-coffe")
