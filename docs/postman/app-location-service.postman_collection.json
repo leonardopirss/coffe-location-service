@@ -1,0 +1,834 @@
+{
+  "info": {
+    "_postman_id": "cfc4b69b-0ed2-46c0-9d47-6f7300f3f146",
+    "name": "App Location Service",
+    "description": "Endpoints da App Location Service, Swagger/OpenAPI, Actuator/Prometheus e Kubernetes/Minikube via kubectl proxy.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "kube_proxy_url",
+      "value": "http://localhost:8001"
+    },
+    {
+      "key": "kube_node",
+      "value": "minikube"
+    },
+    {
+      "key": "namespace",
+      "value": "app-location"
+    },
+    {
+      "key": "pod_name",
+      "value": "app-location-service-pod"
+    },
+    {
+      "key": "metric_name",
+      "value": "jvm.memory.used"
+    },
+    {
+      "key": "jwt_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "App - Users",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (error) {}",
+                  "const token = body.token || body.jwtToken || body.accessToken || body.access_token;",
+                  "if (token) {",
+                  "  pm.environment.set('jwt_token', token);",
+                  "  pm.collectionVariables.set('jwt_token', token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@app-location.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            },
+            "description": "Autentica usuario e salva automaticamente o JWT em `jwt_token` quando a resposta possuir `token`, `jwtToken`, `accessToken` ou `access_token`."
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@app-location.com\",\n  \"password\": \"123456\",\n  \"role\": \"ROLE_CUSTOMER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/create",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "App - Coffee Work",
+      "item": [
+        {
+          "name": "List All",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/list?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter By Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/filter-name?name=cafe",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "filter-name"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "cafe"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Best Coffee",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/list/best-coffe?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "list",
+                "best-coffe"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Coffee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cafe Central\",\n  \"adress\": \"Rua Principal, 100\",\n  \"municipality\": \"Sao Paulo\",\n  \"uf\": \"SP\",\n  \"description\": \"Ambiente para trabalhar com internet e tomadas.\",\n  \"assessment\": 5,\n  \"latitude\": -23.55052,\n  \"longitude\": -46.633308\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/add-coffe",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "add-coffe"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Closest Coffee",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/closest/coffe?latitude=-23.55052&longitude=-46.633308",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "closest",
+                "coffe"
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "-23.55052"
+                },
+                {
+                  "key": "longitude",
+                  "value": "-46.633308"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Coffee",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/delete-coffe?id=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "delete-coffe"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Swagger - OpenAPI",
+      "item": [
+        {
+          "name": "Swagger UI",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/swagger-ui/index.html",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Swagger UI Redirect",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/swagger-ui.html",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "swagger-ui.html"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v3/api-docs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Swagger Config",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v3/api-docs/swagger-config",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs",
+                "swagger-config"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Actuator - Metrics",
+      "item": [
+        {
+          "name": "Actuator Index",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Liveness",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/health/liveness",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health",
+                "liveness"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Readiness",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/health/readiness",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health",
+                "readiness"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Info",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/info",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "info"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Metrics Index",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/metrics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "metrics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Metric By Name",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/metrics/{{metric_name}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "metrics",
+                "{{metric_name}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Prometheus Metrics",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/prometheus",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "prometheus"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Kubernetes - kubectl proxy",
+      "description": "Requer `kubectl proxy` rodando localmente. Base: `{{kube_proxy_url}}`.",
+      "item": [
+        {
+          "name": "Cluster API",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Nodes",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/nodes",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "nodes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Namespaces",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/namespaces",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "namespaces"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pods By Namespace",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/namespaces/{{namespace}}/pods",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "namespaces",
+                "{{namespace}}",
+                "pods"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Services By Namespace",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/namespaces/{{namespace}}/services",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "namespaces",
+                "{{namespace}}",
+                "services"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Endpoints By Namespace",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/namespaces/{{namespace}}/endpoints",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "namespaces",
+                "{{namespace}}",
+                "endpoints"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pod Logs",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/namespaces/{{namespace}}/pods/{{pod_name}}/log",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "namespaces",
+                "{{namespace}}",
+                "pods",
+                "{{pod_name}}",
+                "log"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Node Metrics",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/nodes/{{kube_node}}/proxy/metrics",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "nodes",
+                "{{kube_node}}",
+                "proxy",
+                "metrics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "cAdvisor Metrics",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/nodes/{{kube_node}}/proxy/metrics/cadvisor",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "nodes",
+                "{{kube_node}}",
+                "proxy",
+                "metrics",
+                "cadvisor"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resource Metrics",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{kube_proxy_url}}/api/v1/nodes/{{kube_node}}/proxy/metrics/resource",
+              "host": [
+                "{{kube_proxy_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "nodes",
+                "{{kube_node}}",
+                "proxy",
+                "metrics",
+                "resource"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
