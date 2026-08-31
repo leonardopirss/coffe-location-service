@@ -25,7 +25,13 @@ public class SecurityConfiguration {
             "/users/login",
             "/api/list/best-coffe",
             "/api/list",
-            "/api/closest/coffe"
+            "/api/closest/coffe",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/actuator/**",
+            "/prometheus",
+            "users/create"
     };
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
