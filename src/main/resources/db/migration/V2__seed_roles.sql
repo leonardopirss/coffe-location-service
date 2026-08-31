@@ -1,0 +1,5 @@
+INSERT INTO coffework.role (name)
+VALUES
+    ('ROLE_CUSTOMER'),
+    ('ROLE_ADMINISTRATOR')
+ON CONFLICT (name) DO NOTHING;
